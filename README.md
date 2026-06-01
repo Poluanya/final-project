@@ -27,4 +27,4 @@ npx playwright show-report
 
 ## Ссылка на отчет:
 
-[Результаты последних тестов](https://Poluanya.github.io/final-project/)
+[Результаты последних тестов](https://poluanya.github.io/final-project/)
