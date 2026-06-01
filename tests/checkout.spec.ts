@@ -6,6 +6,7 @@ test('Полное оформление заказа', async ({ loginPage, inven
   await inventoryPage.addItemToCartByName('Sauce Labs Backpack');
   await inventoryPage.goToCart();
   await page.click('[data-test="checkout"]');
+  await expect(page).toHaveURL(/.*checkout-step-one\.html/);
   await checkoutPage.fillForm('Test', 'User', '12345');
   await checkoutPage.continue();
   await expect(page).toHaveURL(/checkout-step-two.html/);

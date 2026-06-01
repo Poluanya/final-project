@@ -11,6 +11,7 @@ export class CheckoutPage {
   }
 
   async fillForm(firstName: string, lastName: string, zipCode: string) {
+    await this.page.getByTestId('first-name').waitFor({ state: 'visible' });
     await this.page.getByTestId('first-name').fill(firstName);
     await this.page.getByTestId('last-name').fill(lastName);
     await this.page.getByTestId('postal-code').fill(zipCode);
