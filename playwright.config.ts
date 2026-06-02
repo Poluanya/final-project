@@ -2,12 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  fullyParallel: true,
+  // Важно: в CI мы хотим параллелизм, но локально будем управлять им вручную
+  fullyParallel: !process.env.CI ? false : true,
+  workers: process.env.CI ? '100%' : 1, // В CI — на полную, локально — только 1 поток
 
   forbidOnly: !!process.env.CI,
-
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+
   reporter: 'html',
   use: {
     baseURL: 'https://www.saucedemo.com',

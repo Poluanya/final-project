@@ -11,14 +11,21 @@ const loginData = [
 ];
 
 for (const [index, data] of loginData.entries()) {
-  test(`Проверка входа: #${index + 1}: ${data.user || 'empty'}`, async ({ loginPage, page }) => {
-    await loginPage.navigate();
-    await loginPage.login(data.user, data.pass);
+  test(`Проверка входа: #${index + 1}: ${data.user || 'empty'}`, async ({ loginPage }) => {
+    await test.step('Переход на страницу логина', async () => {
+      await loginPage.navigate();
+    });
 
-    if (data.expectSuccess) {
-      await expect(page).toHaveURL(/inventory.html/);
-    } else {
-      await expect(page.locator('[data-test="error"]')).toBeVisible();
-    }
+    await test.step(`Ввод данных: ${data.user || 'empty'}`, async () => {
+      await loginPage.login(data.user, data.pass);
+    });
+
+    await test.step('Проверка результата', async () => {
+      if (data.expectSuccess) {
+        expect(await loginPage.isLoginSuccessful()).toBe(true);
+      } else {
+        await expect(loginPage.errorMessage).toBeVisible();
+      }
+    });
   });
 }

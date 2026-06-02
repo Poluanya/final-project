@@ -1,14 +1,22 @@
 import { test, expect } from '../fixtures/base';
 
-test('Переход к деталям товара и проверка названия', async ({ loginPage, inventoryPage, page }) => {
-  await loginPage.navigate();
-  await loginPage.login('standard_user', 'secret_sauce');
+test('Переход к деталям товара и проверка названия', async ({ loginPage, inventoryPage }) => {
+  await test.step('Авторизация', async () => {
+    await loginPage.navigate();
+    await loginPage.login('standard_user', 'secret_sauce');
+  });
 
   const productName = 'Sauce Labs Backpack';
-  await inventoryPage.clickProductByName(productName);
-  await expect(page).toHaveURL(/inventory-item.html/);
 
-  const detailName = page.locator('.inventory_details_name');
-  await expect(detailName).toHaveText(productName);
-  await expect(page.locator('#back-to-products')).toBeVisible();
+  await test.step('Переход к деталям товара', async () => {
+    await inventoryPage.clickProductByName(productName);
+  });
+
+  await test.step('Проверка информации о товаре', async () => {
+    const title = await inventoryPage.getProductTitle();
+    const backBtn = await inventoryPage.getBackButton();
+
+    await expect(title).toHaveText(productName);
+    await expect(backBtn).toBeVisible();
+  });
 });

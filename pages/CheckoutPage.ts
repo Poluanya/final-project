@@ -1,31 +1,25 @@
+// pages/CheckoutPage.ts
 import { Page } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { generateUser } from '../factories/userFactory';
 
 export class CheckoutPage {
   constructor(private readonly page: Page) {}
 
   async fillRandomForm() {
-    await this.page.getByRole('textbox', { name: /first name/i }).fill(faker.person.firstName());
-    await this.page.getByRole('textbox', { name: /last name/i }).fill(faker.person.lastName());
-    await this.page
-      .getByRole('textbox', { name: /zip\/postal code/i })
-      .fill(faker.location.zipCode());
-  }
-
-  async fillForm(firstName: string, lastName: string, zipCode: string) {
-    const firstNameField = this.page.getByRole('textbox', { name: /first name/i });
-
-    await firstNameField.waitFor({ state: 'visible' });
-    await firstNameField.fill(firstName);
-    await this.page.getByRole('textbox', { name: /last name/i }).fill(lastName);
-    await this.page.getByRole('textbox', { name: /zip\/postal code/i }).fill(zipCode);
+    const user = generateUser(); // Используем фабрику
+    await this.page.getByRole('textbox', { name: /first name/i }).fill(user.firstName);
+    await this.page.getByRole('textbox', { name: /last name/i }).fill(user.lastName);
+    await this.page.getByRole('textbox', { name: /zip\/postal code/i }).fill(user.zipCode);
   }
 
   async continue() {
-    await this.page.getByRole('button', { name: 'Continue' }).click();
+    await this.page.getByRole('button', { name: /continue/i }).click();
+  }
+  async finish() {
+    await this.page.getByRole('button', { name: /finish/i }).click();
   }
 
-  async finish() {
-    await this.page.getByRole('button', { name: 'Finish' }).click();
+  get errorMessage() {
+    return this.page.locator('[data-test="error"]');
   }
 }
